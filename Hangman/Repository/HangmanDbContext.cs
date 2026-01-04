@@ -64,8 +64,8 @@ namespace Hangman.Repository
             // createdAt addition
             foreach (var item in entitiesOnDbContext.Where(t => t.State == EntityState.Added))
             {
-                item.Entity.CreatedAt = System.DateTime.Now;
-                item.Entity.UpdatedAt = System.DateTime.Now;
+                item.Entity.CreatedAt = System.DateTime.UtcNow;
+                item.Entity.UpdatedAt = System.DateTime.UtcNow;
                 
                 if (item.Entity.GetType().Name == "GameRoomPlayer")
                 {
@@ -76,7 +76,7 @@ namespace Hangman.Repository
             // updatedAt addition
             foreach (var item in entitiesOnDbContext.Where(t => t.State == EntityState.Modified))
             {
-                item.Entity.UpdatedAt = System.DateTime.Now;
+                item.Entity.UpdatedAt = System.DateTime.UtcNow;
             }
         }
     }

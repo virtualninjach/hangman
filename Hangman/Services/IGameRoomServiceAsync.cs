@@ -20,5 +20,6 @@ namespace Hangman.Services
         public Task<GuessLetter> CreateGuessLetter(GuessWord guessWord, string guessLetter);
         public Task<GameStateDTO> UpdateGameRoundState(NewGuessLetterDTO newGuessLetterDTO);
         public IEnumerable<string> GetGuessWordStateSoFar(GuessWord guessWord);
+        public Task<bool> Delete(Guid gameRoomId);
     }
 }

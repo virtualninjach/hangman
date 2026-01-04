@@ -1,0 +1,43 @@
+﻿@page
+@model Hangman.Pages.Rooms.CreateModel
+@{
+    ViewData["Title"] = "Create Room";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1>🚪 Create New Game Room</h1>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="RoomName" class="form-label">Room Name</label>
+                <input asp-for="RoomName" class="form-control" placeholder="Enter room name" />
+                <span asp-validation-for="RoomName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create Room</button>
+                <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+        @if (Model.CreatedRoom != null)
+        {
+            <div class="alert alert-success mt-3">
+                <h4>✅ Room Created Successfully!</h4>
+                <p><strong>Room:</strong> @Model.CreatedRoom.Name</p>
+                <p class="mb-0">
+                    <a asp-page="Details" asp-route-id="@Model.CreatedRoom.Id" class="btn btn-success">
+                        Go to Room
+                    </a>
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

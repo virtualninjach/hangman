@@ -1,0 +1,41 @@
+html {
+  font-size: 14px;
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+
+/* Hangman game specific styles */
+.badge {
+  font-size: 1rem;
+}
+
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header h5 {
+  margin-bottom: 0;
+}
+
+input[type="text"].text-uppercase {
+  text-transform: uppercase;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .col-md-8.offset-md-2 {
+    padding: 0 15px;
+  }
+}

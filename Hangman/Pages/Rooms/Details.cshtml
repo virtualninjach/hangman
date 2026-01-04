@@ -1,0 +1,138 @@
+﻿@page "{id:guid}"
+@model Hangman.Pages.Rooms.DetailsModel
+@{
+    ViewData["Title"] = "Room Details";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>🚪 @Model.GameRoom.Name</h1>
+        
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Room Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Room ID:</strong> <code>@Model.GameRoom.Id</code></p>
+                <p><strong>Created:</strong> @Model.GameRoom.CreatedAt.ToLocalTime().ToString("g")</p>
+                <p><strong>Players in Room:</strong> @Model.PlayersInRoom.Count()</p>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>👥 Players (@Model.PlayersInRoom.Count())</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.PlayersInRoom.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var grp in Model.PlayersInRoom)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @grp.Player.Name
+                                @if (grp.IsHost)
+                                {
+                                    <span class="badge bg-warning">Host</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">No players in this room yet.</p>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5>🎯 Available Words (@Model.GameRoom.GuessWords?.Count ?? 0)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.GameRoom.GuessWords != null && Model.GameRoom.GuessWords.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var word in Model.GameRoom.GuessWords)
+                        {
+                            <a asp-page="/Game/Play" 
+                               asp-route-roomId="@Model.GameRoom.Id" 
+                               asp-route-wordId="@word.Id" 
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Word #@word.Id.ToString().Substring(0, 8)</span>
+                                    @if (word.Round?.IsOver == true)
+                                    {
+                                        <span class="badge bg-secondary">Completed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No words set yet. Host can create one!</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Actions</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" class="mb-3">
+                    <input type="hidden" asp-for="PlayerId" />
+                    
+                    <div class="mb-3">
+                        <label for="playerIdInput" class="form-label">Your Player ID</label>
+                        <input type="text" class="form-control" id="playerIdInput" 
+                               asp-for="PlayerId" placeholder="Enter your player ID" />
+                        <small class="form-text text-muted">Get this from Players page</small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" asp-page-handler="Join" class="btn btn-success">
+                            Join Room
+                        </button>
+                        <button type="submit" asp-page-handler="Leave" class="btn btn-warning">
+                            Leave Room
+                        </button>
+                    </div>
+                </form>
+
+                <hr />
+
+                <form method="post">
+                    <input type="hidden" asp-for="PlayerId" />
+                    
+                    <div class="mb-3">
+                        <label asp-for="NewWord" class="form-label">Set New Word (Host Only)</label>
+                        <input asp-for="NewWord" class="form-control" placeholder="Enter word to guess" />
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" asp-page-handler="CreateWord" class="btn btn-primary">
+                            Create Word
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="alert alert-info mt-3">
+                @Model.Message
+            </div>
+        }
+    </div>
+</div>

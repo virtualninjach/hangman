@@ -1,0 +1,43 @@
+﻿@page
+@model Hangman.Pages.Players.IndexModel
+@{
+    ViewData["Title"] = "Players";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>👥 Players</h1>
+        <p>
+            <a asp-page="Create" class="btn btn-primary">Create New Player</a>
+        </p>
+
+        @if (Model.Players == null || !Model.Players.Any())
+        {
+            <div class="alert alert-warning">
+                No players found. <a asp-page="Create">Create one now!</a>
+            </div>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Created At</th>
+                        <th>Player ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var player in Model.Players)
+                    {
+                        <tr>
+                            <td><strong>@player.Name</strong></td>
+                            <td>@player.CreatedAt.ToLocalTime().ToString("g")</td>
+                            <td><code>@player.Id</code></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

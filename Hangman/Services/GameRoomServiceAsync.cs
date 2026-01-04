@@ -68,10 +68,8 @@ namespace Hangman.Services
 
         public async Task<GameRoom?> GetById(Guid id)
         {
-            var gameRoom = await _repository.GetById(id);
-            var includedFieldsOnSerialization = new[] { "GameRoomPlayers", "GuessWords" };
-
-            await _repository.GetById(id, includedFieldsOnSerialization);
+            var includedFieldsOnSerialization = new[] { "GameRoomPlayers.Player", "GuessWords" };
+            var gameRoom = await _repository.GetById(id, includedFieldsOnSerialization);
             return gameRoom;
         }
 
@@ -255,6 +253,30 @@ namespace Hangman.Services
         {
             var allGuessedLetters = guessWord.GuessLetters.Select(letter => letter.Letter);
             return _gameLogic.GetGuessWordSoFar(allGuessedLetters, guessWord.Word);
+        }
+
+        /// <summary>
+        /// Deletes a game room and all associated data (cascade delete handles related entities)
+        /// </summary>
+        /// <param name="gameRoomId">The ID of the game room to delete</param>
+        /// <returns>True if deletion was successful, false if room not found</returns>
+        public async Task<bool> Delete(Guid gameRoomId)
+        {
+            _logger.LogInformation("Attempting to delete game room with id: {GameRoomId}", gameRoomId);
+            
+            var gameRoom = await _repository.GetById(gameRoomId);
+            
+            if (gameRoom == null)
+            {
+                _logger.LogWarning("Game room with id {GameRoomId} not found for deletion", gameRoomId);
+                return false;
+            }
+
+            _logger.LogInformation("Deleting game room: {@GameRoom}", gameRoom);
+            await _repository.Delete(gameRoom);
+            
+            _logger.LogInformation("Game room {GameRoomId} successfully deleted", gameRoomId);
+            return true;
         }
     }
 }

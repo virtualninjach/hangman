@@ -1,0 +1,42 @@
+﻿@page
+@model Hangman.Pages.Players.CreateModel
+@{
+    ViewData["Title"] = "Create Player";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h1>👤 Create New Player</h1>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="mb-3">
+                <label asp-for="PlayerName" class="form-label">Player Name</label>
+                <input asp-for="PlayerName" class="form-control" placeholder="Enter your name" />
+                <span asp-validation-for="PlayerName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create Player</button>
+                <a asp-page="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+
+        @if (Model.CreatedPlayer != null)
+        {
+            <div class="alert alert-success mt-3">
+                <h4>✅ Player Created Successfully!</h4>
+                <p><strong>Name:</strong> @Model.CreatedPlayer.Name</p>
+                <p><strong>Player ID:</strong> <code>@Model.CreatedPlayer.Id</code></p>
+                <p class="mb-0">
+                    <a asp-page="/Rooms/Index" class="btn btn-success">Join a Game Room</a>
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

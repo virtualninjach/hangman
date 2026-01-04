@@ -1,0 +1,125 @@
+﻿@page "{roomId:guid}/{wordId:guid}"
+@model Hangman.Pages.Game.PlayModel
+@{
+    ViewData["Title"] = "Play Hangman";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="text-center">🎯 Hangman Game</h1>
+
+        @if (Model.GameState != null)
+        {
+            <div class="card mb-3">
+                <div class="card-body text-center">
+                    <h2 class="mb-4">
+                        @foreach (var letter in Model.GameState.GuessWordSoFar)
+                        {
+                            <span class="badge bg-primary fs-3 mx-1">@letter</span>
+                        }
+                    </h2>
+
+                    <div class="mb-3">
+                        <h4>
+                            ❤️ Health: 
+                            @for (int i = 0; i < Model.GameState.PlayerHealth; i++)
+                            {
+                                <span>💚</span>
+                            }
+                            @for (int i = Model.GameState.PlayerHealth; i < 6; i++)
+                            {
+                                <span>🖤</span>
+                            }
+                        </h4>
+                    </div>
+
+                    @if (Model.GameState.IsOver)
+                    {
+                        <div class="alert @(Model.GameState.PlayerHealth > 0 ? "alert-success" : "alert-danger")">
+                            <h3>
+                                @if (Model.GameState.PlayerHealth > 0)
+                                {
+                                    <span>🎉 YOU WON! 🎉</span>
+                                }
+                                else
+                                {
+                                    <span>💀 GAME OVER 💀</span>
+                                }
+                            </h3>
+                            <p class="mb-0"><strong>The word was:</strong> @Model.GameState.GuessWord</p>
+                            <hr />
+                            <a asp-page="/Rooms/Details" asp-route-id="@Model.RoomId" class="btn btn-primary">
+                                Back to Room
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <form method="post" class="mt-4">
+                            <input type="hidden" asp-for="PlayerId" />
+                            
+                            <div class="mb-3">
+                                <label for="playerIdInput" class="form-label">Your Player ID</label>
+                                <input type="text" class="form-control" asp-for="PlayerId" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="GuessLetter" class="form-label">Guess a Letter</label>
+                                <input asp-for="GuessLetter" class="form-control text-center text-uppercase" 
+                                       maxlength="1" style="font-size: 2rem;" required />
+                            </div>
+
+                            <button type="submit" class="btn btn-lg btn-primary">
+                                Submit Guess
+                            </button>
+                        </form>
+                    }
+
+                    <div class="mt-4">
+                        <h5>Guessed Letters:</h5>
+                        <div>
+                            @if (Model.GameState.GuessedLetters.Any())
+                            {
+                                foreach (var letter in Model.GameState.GuessedLetters)
+                                {
+                                    <span class="badge bg-secondary mx-1">@letter.ToUpper()</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">No letters guessed yet</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="alert alert-info">
+                    @Model.Message
+                </div>
+            }
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                <h4>Error loading game</h4>
+                <p>@Model.Message</p>
+                <a asp-page="/Rooms/Index" class="btn btn-primary">Back to Rooms</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-focus on letter input
+        document.querySelector('input[name="GuessLetter"]')?.focus();
+        
+        // Auto-uppercase input
+        document.querySelector('input[name="GuessLetter"]')?.addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+}
